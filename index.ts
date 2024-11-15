@@ -1,14 +1,46 @@
 import * as k8s from "@pulumi/kubernetes";
+import * as rmq from "./rabbitmq-crd";
 
-const appLabels = { app: "nginx" };
-const deployment = new k8s.apps.v1.Deployment("nginx", {
-    spec: {
-        selector: { matchLabels: appLabels },
-        replicas: 1,
-        template: {
-            metadata: { labels: appLabels },
-            spec: { containers: [{ name: "nginx", image: "nginx" }] }
-        }
-    }
+const service = new k8s.core.v1.Service("test-svc", {
+  metadata: { name: "test-svc" },
+  spec: {
+    ports: [{ port: 80, targetPort: 80 }],
+    selector: {
+      app: "test-deployment",
+    },
+  },
 });
-export const name = deployment.metadata.name;
+
+const user = new rmq.rabbitmq.v1beta1.User("test-user", {
+  metadata: { name: "test-user", namespace: "platform" },
+  spec: {
+    rabbitmqClusterReference: {
+      name: "rabbitmq-cluster",
+      namespace: "rabbitmq",
+    },
+  },
+});
+
+const perm = new rmq.rabbitmq.v1beta1.Permission("test-perm", {
+  metadata: { name: "test-perm", namespace: "platform" },
+  spec: {
+    vhost: "/",
+    user: user.status.username,
+    permissions: {
+      configure: ".*",
+      write: ".*",
+      read: ".*",
+    },
+    rabbitmqClusterReference: {
+      name: "rabbitmq-cluster",
+      namespace: "rabbitmq",
+    },
+  },
+});
+
+export const name = service.metadata.name;
+export const username = user.metadata.name;
+
+console.log("Deployment: ", service.status);
+console.log("User: ", user.status);
+console.log("Permission: ", perm.status);
