@@ -1,0 +1,31 @@
+{
+    "compilerOptions": {
+        "outDir": "bin",
+        "target": "es2016",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "declaration": true,
+        "sourceMap": true,
+        "stripInternal": true,
+        "experimentalDecorators": true,
+        "noFallthroughCasesInSwitch": true,
+        "forceConsistentCasingInFileNames": true,
+        "strict": true
+    },
+    "files": [
+        "index.ts",
+        "provider.ts",
+        "rabbitmq/index.ts",
+        "rabbitmq/v1beta1/index.ts",
+        "rabbitmq/v1beta1/permission.ts",
+        "rabbitmq/v1beta1/permissionList.ts",
+        "rabbitmq/v1beta1/permissionPatch.ts",
+        "rabbitmq/v1beta1/user.ts",
+        "rabbitmq/v1beta1/userList.ts",
+        "rabbitmq/v1beta1/userPatch.ts",
+        "types/index.ts",
+        "types/input.ts",
+        "types/output.ts",
+        "utilities.ts"
+    ]
+}
